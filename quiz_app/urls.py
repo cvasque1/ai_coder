@@ -17,3 +17,4 @@ urlpatterns = [
     path('cand_results/', views.cand_results, name='cand_results'),
     # Add more paths for your other pages
 ]
+ 

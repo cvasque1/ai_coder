@@ -42,7 +42,7 @@ def login_view(request):
     else:
         return redirect('quiz_app:auth_page')
 
-
+ 
 def home(request):
     return render(request, 'quiz_app/homev2.html')
 
