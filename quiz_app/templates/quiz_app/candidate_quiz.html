@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Quiz Page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/candidate.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="quiz-timer">
+      <p>Time remaining: <span id="timer">30:00</span></p>
+    </div>
+    <form id="quiz-form">
+      <!-- Add questions and answer options here -->
+      <div class="form-group">
+        <label for="question1">1. Which of these is not a programming language?</label>
+        <select class="form-control" id="question1">
+          <option>Python</option>
+          <option>Ruby</option>
+          <option>Java</option>
+          <option>Sapphire</option>
+        </select>
+      </div>
+      <!-- More questions here -->
+    </form>
+    <button class="btn btn-primary submit-btn" onclick="location.href='thank_you.html'">Submit Quiz</button>
+  </div>
+</body>
+</html>

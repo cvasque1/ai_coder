@@ -1,0 +1,74 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    font-weight: 400;
+  }
+  
+  .container {
+    margin-top: 30px;
+    max-width: 80%;
+  }
+  
+  header {
+    background-color: #fff;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+  }
+  
+  nav ul {
+    display: flex;
+    align-items: center;
+  }
+  
+  nav li {
+    list-style: none;
+    margin-left: 15px;
+  }
+  
+  .nav-link {
+    color: #212529;
+    font-weight: 600;
+  }
+  
+  .cta-button {
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+    border-radius: 5px;
+    padding: 10px 15px;
+    color: #fff;
+    font-weight: 600;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  
+  .cta-button:hover,
+  .cta-button:focus {
+    background-color: #3c78d8;
+    border-color: #3568c4;
+    text-decoration: none;
+    color: #fff;
+  }
+  
+  main {
+    text-align: center;
+  }
+  
+  footer {
+    background-color: #fff;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    padding: 20px 0;
+  }
+  
+  .social-media-icons {
+    display: flex;
+  }
+  
+  .social-media-icons a {
+    color: #212529;
+    font-size: 24px;
+    margin-right: 10px;
+  }
+  
+  .copyright {
+    margin-top: 10px;
+  }
+  

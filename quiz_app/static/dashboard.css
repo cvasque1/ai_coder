@@ -1,0 +1,123 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change the font family */
+    background-color: #f4f6f8;
+    font-weight: 400;
+}
+
+.container {
+    margin-top: 30px;
+    max-width: 80%; /* Change this line to reduce the width */
+}
+
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
+
+hr {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#quiz-list {
+    width: 100%;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+}
+
+.quiz-info {
+    display: flex;
+    align-items: center;
+}
+
+.quiz-title {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+h3.quiz-title {
+    font-weight: 400; /* Add this line to reduce boldness of entry names */
+}
+
+.quiz-actions {
+    display: flex;
+    align-items: center;
+}
+
+.quiz-actions .btn,
+#create-quiz-btn {
+    margin-right: 5px;
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+}
+
+.quiz-actions .btn:hover,
+.quiz-actions .btn:focus,
+#create-quiz-btn:hover,
+#create-quiz-btn:focus {
+    background-color: #3c78d8;
+    border-color: #3568c4;
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.dropdown-toggle:focus + .dropdown-menu,
+.dropdown-menu:hover {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}

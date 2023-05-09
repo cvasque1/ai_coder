@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <!-- CSS for Bootstrap 4 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <!-- Add jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+
+    <!-- Add Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" crossorigin="anonymous"></script>
+
+    <!-- JavaScript for Bootstrap 4 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <!-- Add your custom CSS file -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">AppName</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Homepage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user-dashboard">User Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/create-quiz">Create Quiz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <section class="my-4">
+            <h1>User Dashboard</h1>
+            <button onclick="location.href='{% url 'quiz_app:quiz_creation' %}'" id="create-quiz-btn" class="btn btn-primary">Create New Quiz</button>
+        </section>
+        <hr>
+        <section>
+            <h2>Your Quizzes</h2>
+            <ul id="quiz-list" class="list-group">
+                <li class="list-group-item">
+                    <div class="quiz-info">
+                        <h3 class="quiz-title">Sample Quiz 1</h3>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="btn btn-secondary btn-sm">Edit Quiz</button>
+                        <button onclick="location.href='{% url 'quiz_app:quiz_results' %}'" class="btn btn-secondary btn-sm">View Results</button>
+                        <div class="dropdown">
+                            <!-- Replace 'data-toggle' with 'data-bs-toggle' -->
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                <span>⋮</span>
+                            </button>                          
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Delete Quiz</a>
+                                <a href="{% url 'quiz_app:candidate_auth' %}" class="dropdown-item" href="#">Send Quiz</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="quiz-info">
+                        <h3 class="quiz-title">Sample Quiz 2</h3>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="btn btn-secondary btn-sm">Edit Quiz</button>
+                        <button class="btn btn-secondary btn-sm">View Results</button>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                <span class="text-light">⋮</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Delete Quiz</a>
+                                <a class="dropdown-item" href="#">Send Quiz</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="quiz-info">
+                        <h3 class="quiz-title">Sample Quiz 3</h3>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="btn btn-secondary btn-sm">Edit Quiz</button>
+                        <button class="btn btn-secondary btn-sm">View Results</button>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                <span class="text-light">⋮</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Delete Quiz</a>
+                                <a class="dropdown-item" href="#">Send Quiz</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- Populate the list of quizzes from the backend -->
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <!-- Add your footer content here -->
+    </footer>
+    <!-- Add jQuery, Popper.js, and Bootstrap JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
