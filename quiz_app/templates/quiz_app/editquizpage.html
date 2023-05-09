@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Edit Quiz</title>
+    <style>
+      body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      h2 {
+          padding-bottom: 30px;
+          color: #007BFF;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+  <header class="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'quiz_app:dashboard' %}">Software Programming Quiz</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#accountModal">Welcome, User</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container my-5">
+    <h2 class="mb-4 text-center">Edit Quiz</h2>
+    <div class="row">
+      <form method="post" id="edit-quiz-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div id="questions-list">
+          {% for question in quiz.questions.all %}
+            <div class="question-unit" data-question-id="{{ question.id }}">
+              <h4>{{ question.question_text }}</h4>
+              <ul>
+                {% for answer in question.answers.all %}
+                  <li>{{ answer.answer_text }}</li>
+                {% endfor %}
+              </ul>
+              <button type="button" class="remove-question-btn">X</button>
+            </div>
+          {% endfor %}
+        </div>
+        <button type="button" id="add-question-btn">Add Question</button>
+        <button type="submit">Save Quiz</button>
+      </form>
+      <!-- Add a modal to display the available questions -->
+      <div id="available-questions-modal" style="display:none;">
+        <h3>Available Questions</h3>
+        <input type="text" id="search-input" placeholder="Search questions..." />
+        <div id="available-questions-list">
+          <!-- Load available questions via AJAX -->
+        </div>
+        <button type="button" id="add-selected-question-btn">Add Selected Question</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <p>&copy; 2023 Software Programming Quiz. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    $(document).ready(function () {
+      // Remove question button click
+      $(".remove-question-btn").on("click", function () {
+        $(this).closest(".question-unit").remove();
+      });
+
+      // Add question button click
+      $("#add-question-btn").on("click", function () {
+        // Load available questions via AJAX
+        loadAvailableQuestions();
+        // Show the modal
+        $("#available-questions-modal").show();
+      });
+
+      // Search input keyup
+      $("#search-input").on("keyup", function () {
+        loadAvailableQuestions($(this).val());
+      });
+
+      // Add selected question button click
+      $("#add-selected-question-btn").on("click", function () {
+        // Get the selected question
+        var selectedQuestion = $("#available-questions-list .question-unit.selected");
+
+        // Add the selected question to the quiz questions list
+        $("#questions-list").append(selectedQuestion.clone());
+
+        // Hide the modal
+        $("#available-questions-modal").hide();
+      });
+    });
+
+    function loadAvailableQuestions(searchTerm) {
+      $.ajax({
+        url: "/available_questions/", // Update with your URL to fetch available questions
+        data: { search: searchTerm },
+        success: function (data) {
+          // Render available questions in the modal
+          $("#available-questions-list").html(data);
+          // Add click event to select a question
+          $("#available-questions-list .question-unit").on("click", function () {
+            $(this).siblings().removeClass("selected");
+            $(this).addClass("selected");
+          });
+        },
+      });
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

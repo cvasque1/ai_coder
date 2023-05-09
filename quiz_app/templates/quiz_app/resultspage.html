@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Quiz Results</title>
+  <style>
+      body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      h2 {
+          padding-bottom: 30px;
+          color: #007BFF;
+      }
+   </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="{% url 'quiz_app:dashboard' %}">Software Programming Quiz</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Welcome, User</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+  </header>
+
+  <main class="container my-5">
+
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center">Quiz Results</h2>
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="searchQuizTitle" placeholder="Search by Quiz Title">
+        </div>
+      </div>
+
+    <!-- List of Quiz Results -->
+    <div class="card mb-4">
+      <!-- Quiz Results for Quiz 1-->
+      <div class="card-header">Quiz 1</div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Score</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add table rows for quiz respondents -->
+            <tr>
+              <td>1</td>
+              <td>John Doe</td>
+              <td>john.doe@example.com</td>
+              <td>95%</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailedResultsModal">View Results</button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Alice Brown</td>
+              <td>alice.brown@example.com</td>
+              <td>88%</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailedResultsModal">View Results</button>
+              </td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Bob Johnson</td>
+              <td>bob.johnson@example.com</td>
+              <td>80%</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailedResultsModal">View Results</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quiz Results for Quiz 2-->
+    <div class="card mb-4">
+      <div class="card-header">Quiz 2</div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Score</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add table rows for quiz respondents -->
+            <tr>
+              <td>1</td>
+              <td>Jane Smith</td>
+              <td>jane.smith@example.com</td>
+              <td>90%</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailedResultsModal">View Results</button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Charlie Green</td>
+              <td>charlie.green@example.com</td>
+              <td>85%</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailedResultsModal">View Results</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>Emily Adams</td>
+              <td>emily.adams@example.com</td>
+              <td>82%</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailedResultsModal">View Results</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+    <!-- Detailed Results Modal -->
+<div class="modal fade" id="detailedResultsModal" tabindex="-1" aria-labelledby="detailedResultsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailedResultsModalLabel">Detailed Results</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <h6>Candidate: John Doe</h6>
+          <h6>Quiz: Web Development Quiz</h6>
+          <h6>Overall Score: 95%</h6>
+          <h6>Total Correct Answers: 19 out of 20</h6>
+          <h6>Time Spent: 25 minutes</h6>
+
+          <table class="table table-striped mt-3">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Answer(s)</th>
+                <th>Time Spent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>What does HTML stand for?</td>
+                <td>Hypertext Markup Language</td>
+                <td>30 seconds</td>
+              </tr>
+              <tr>
+                <td>What does CSS stand for?</td>
+                <td>Cascading Style Sheets</td>
+                <td>45 seconds</td>
+              </tr>
+              <!-- Add more rows for other questions -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <p>&copy; 2023 Software Programming Quiz. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

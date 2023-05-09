@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Quiz Management</title>
+    <style>
+      body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      h2 {
+          padding-bottom: 30px;
+          color: #007BFF;
+      }
+
+      .quiz-table {
+          z-index: 1040;
+          position: relative;
+      }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container">
+            <a class="navbar-brand" href="{% url 'quiz_app:dashboard' %}">Software Programming Quiz</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Welcome, User</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    </header>
+
+
+  <main class="container my-5">
+    <div class="row align-items-center">
+      <div class="col text-center">
+        <h2 class="mb-4">Quiz Management</h2>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#createQuizModal">Create Quiz</button>
+      </div>
+    </div>
+
+    <div class="modal fade" id="createQuizModal" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createQuizModalLabel">Create Quiz</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#createQuizModal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="create-quiz-form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+              </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="table-responsive mt-4 quiz-table">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col" class="col-1">#</th>
+            <th scope="col" class="col-7">Quiz Title</th>
+            <th scope="col" class="col-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for quiz in quizzes %}
+              <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ quiz.title }}</td>
+                  <td>
+                      <a href="{% url 'quiz_app:editquizpage' quiz.id %}" class="btn btn-sm btn-outline-primary edit-quiz-btn">Edit Quiz</a>
+                      <button type="button" class="btn btn-outline-danger btn-sm">Delete Quiz</button>
+                      <a href="{% url 'quiz_app:candidate_auth' %}" class="btn btn-success btn-sm">Send Email</a>
+                  </td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <p>&copy; 2023 Software Programming Quiz. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("create-quiz-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+    
+        let form = document.getElementById("create-quiz-form");
+        let formData = new FormData(form);
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "{% url 'quiz_app:create_quiz' %}", true);
+        xhr.setRequestHeader("X-CSRFToken", document.getElementsByName("csrfmiddlewaretoken")[0].value);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // You can handle the response here, like closing the modal and updating the quiz list
+                console.log(xhr.responseText);
+            }
+        };
+        xhr.send(formData);
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import CustomUser
+from .models import CustomUser, Quiz, Question
 
 class CustomUserAdmin(UserAdmin):
     """Define admin model for custom User model with email as the unique identifier"""
@@ -21,6 +21,19 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
-admin.site.register(CustomUser, CustomUserAdmin)
 
- 
+class QuestionInline(admin.TabularInline):
+    model = Quiz.questions.through
+
+
+class QuizAdmin(admin.ModelAdmin):
+    exclude = ('questions',)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "questions":
+            kwargs["queryset"] = Question.objects.filter(owner=request.user)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Quiz, QuizAdmin)

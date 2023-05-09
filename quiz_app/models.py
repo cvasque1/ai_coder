@@ -22,6 +22,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
+    quizzes = models.ManyToManyField('Quiz', blank=True, related_name='quiz_creators')
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -29,4 +31,36 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+class Quiz(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    time_limit = models.PositiveIntegerField()
+    questions = models.ManyToManyField('Question')
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owned_quizzes')
+
+    def __str__(self):
+        return self.title
+
+class Question(models.Model):
+    QUESTION_TYPES = (
+        ('TF', 'True/False'),
+        ('MC', 'Multiple Choice'),
+        ('CA', 'Check All That Apply'),
+        ('FF', 'Free-form Answers'),
+    )
+
+    question_text = models.TextField()
+    question_type = models.CharField(max_length=2, choices=QUESTION_TYPES)
+
+    def __str__(self):
+        return self.question_text
+    
+class AnswerChoice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
+    text = models.TextField()
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.text
  
