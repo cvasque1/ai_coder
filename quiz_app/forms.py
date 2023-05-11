@@ -17,14 +17,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 class CreateQuizForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ('title', 'description', 'time_limit', 'questions')
-        widgets = {
-            'questions': forms.CheckboxSelectMultiple(),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['questions'].queryset = Question.objects.all()
+        fields = ('title', 'description', 'time_limit')
 
 
 class QuizForm(forms.ModelForm):

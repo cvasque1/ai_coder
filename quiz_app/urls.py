@@ -15,6 +15,7 @@ urlpatterns = [
     path('quizzespage/', views.quizzes_page, name='quizzespage'),
     path('editquizpage/<int:quiz_id>', views.edit_quiz_page, name='editquizpage'),
     path('create_quiz/', CreateQuizView.as_view(), name='create_quiz'),
+    path('fetchquizzes/', views.fetch_quizzes, name='fetchquizzes'),
     path('available_questions/', views.available_questions, name='available_questions'),
     # path('create/', views.quiz_creation, name='quiz_creation'),
     path('candidate_auth/', views.candidate_auth, name='candidate_auth'),

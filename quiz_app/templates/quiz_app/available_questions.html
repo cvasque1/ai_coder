@@ -1,0 +1,10 @@
+{% for question in questions %}
+  <div class="question-unit" data-question-id="{{ question.id }}" data-added-to-quiz="false">
+    <p>{{ question.question_text }}</p>
+    <ul>
+      {% for answer in question.answers.all %}
+        <li>{{ answer.answer_text }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}

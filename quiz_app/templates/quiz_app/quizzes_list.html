@@ -1,0 +1,13 @@
+<tbody>
+    {% for quiz in quizzes %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ quiz.title }}</td>
+            <td>
+                <a href="{% url 'quiz_app:editquizpage' quiz.id %}" class="btn btn-sm btn-outline-primary edit-quiz-btn">Edit Quiz</a>
+                <button type="button" class="btn btn-outline-danger btn-sm">Delete Quiz</button>
+                <a href="{% url 'quiz_app:candidate_auth' %}" class="btn btn-success btn-sm">Send Email</a>
+            </td>
+        </tr>
+    {% endfor %}
+  </tbody>

@@ -14,6 +14,15 @@
           padding-bottom: 30px;
           color: #007BFF;
       }
+
+      .question-unit {
+        cursor: pointer;
+      }
+    
+      .question-unit.selected {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+      }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -48,14 +57,14 @@
         {{ form.as_p }}
         <div id="questions-list">
           {% for question in quiz.questions.all %}
-            <div class="question-unit" data-question-id="{{ question.id }}">
-              <h4>{{ question.question_text }}</h4>
+            <div class="question-container" data-question-id="{{ question.id }}">
+              <button class="remove-question">X</button>
+              <p>{{ question.question_text }}</p>
               <ul>
                 {% for answer in question.answers.all %}
                   <li>{{ answer.answer_text }}</li>
                 {% endfor %}
               </ul>
-              <button type="button" class="remove-question-btn">X</button>
             </div>
           {% endfor %}
         </div>
@@ -63,14 +72,21 @@
         <button type="submit">Save Quiz</button>
       </form>
       <!-- Add a modal to display the available questions -->
-      <div id="available-questions-modal" style="display:none;">
+      <div id="available-questions-modal" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc;">
         <h3>Available Questions</h3>
-        <input type="text" id="search-input" placeholder="Search questions..." />
-        <div id="available-questions-list">
-          <!-- Load available questions via AJAX -->
+        <label for="question-type-filter">Filter by question type:</label>
+        <select id="question-type-filter">
+            <option value="">All</option>
+            {% for type, display_name in form.fields.questions.queryset.model.QUESTION_TYPES %}
+            <option value="{{ type }}">{{ display_name }}</option>
+            {% endfor %}
+        </select>
+        <div id="available-questions-list" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+            <!-- Load available questions via AJAX -->
         </div>
         <button type="button" id="add-selected-question-btn">Add Selected Question</button>
       </div>
+      <!-- ... -->
     </div>
 
   </main>
@@ -90,7 +106,7 @@
       $(".remove-question-btn").on("click", function () {
         $(this).closest(".question-unit").remove();
       });
-
+    
       // Add question button click
       $("#add-question-btn").on("click", function () {
         // Load available questions via AJAX
@@ -98,37 +114,43 @@
         // Show the modal
         $("#available-questions-modal").show();
       });
-
+    
       // Search input keyup
       $("#search-input").on("keyup", function () {
         loadAvailableQuestions($(this).val());
       });
-
+    
+      // Filter by question type change
+      $("#question-type-filter").on("change", function () {
+        loadAvailableQuestions($("#search-input").val(), $(this).val());
+      });
+    
       // Add selected question button click
       $("#add-selected-question-btn").on("click", function () {
         // Get the selected question
         var selectedQuestion = $("#available-questions-list .question-unit.selected");
-
+    
         // Add the selected question to the quiz questions list
         $("#questions-list").append(selectedQuestion.clone());
-
+    
         // Hide the modal
         $("#available-questions-modal").hide();
       });
+    
+      // Add click event to select a question
+      $(document).on("click", "#available-questions-list .question-unit", function () {
+        $(this).siblings().removeClass("selected");
+        $(this).addClass("selected");
+      });
     });
-
-    function loadAvailableQuestions(searchTerm) {
+    
+    function loadAvailableQuestions(searchTerm, questionType) {
       $.ajax({
         url: "/available_questions/", // Update with your URL to fetch available questions
-        data: { search: searchTerm },
+        data: { search: searchTerm, question_type: questionType },
         success: function (data) {
           // Render available questions in the modal
           $("#available-questions-list").html(data);
-          // Add click event to select a question
-          $("#available-questions-list .question-unit").on("click", function () {
-            $(this).siblings().removeClass("selected");
-            $(this).addClass("selected");
-          });
         },
       });
     }

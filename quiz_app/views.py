@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.views import View
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 from .forms import CustomUserCreationForm, CreateQuizForm, QuizForm, QuestionForm
 from .models import Quiz, Question
 import json
@@ -63,25 +64,36 @@ def quizzes_page(request):
     form = CreateQuizForm()
     return render(request, 'quiz_app/quizzespage.html', {'quizzes': user_quizzes, 'form': form})
 
-class CreateQuizView(View):
-    def get(self, request):
-        form = CreateQuizForm()
-        return render(request, 'create_quiz.html', {'form': form})
+def fetch_quizzes(request):
+    user = request.user
+    user_quizzes = Quiz.objects.filter(owner=user)
+    html = render_to_string('quiz_app/quizzes_list.html', {'quizzes': user_quizzes})
+    response_data = {'status': 'success', 'html': html}
+    return JsonResponse(response_data)
 
+class CreateQuizView(View):
     def post(self, request):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             form = CreateQuizForm(request.POST)
+            print(request.POST)
             if form.is_valid():
                 quiz = form.save(commit=False)
                 quiz.owner = request.user
                 quiz.save()
-                form.save_m2m()
+                # Get the selected questions from the request
+                selected_questions = request.POST.getlist('questions')
+                # Add the selected questions to the quiz
+                for question_id in selected_questions:
+                    question = Question.objects.get(id=question_id)
+                    quiz.questions.add(question)
+                quiz.save()
                 return JsonResponse({'status': 'success', 'message': 'Quiz created successfully.'})
             else:
                 print(form.errors)
-                messages.error(request, "Registration failed. Please try again.")
+                messages.error(request, "Quiz creation failed. Please try again.")
                 return JsonResponse({'status': 'error', 'message': 'Form is not valid.'})
         return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
+
 
 def edit_quiz_page(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, owner=request.user)
@@ -114,21 +126,19 @@ def edit_quiz_page(request, quiz_id):
 
 def available_questions(request):
     search_term = request.GET.get('search', '')
+    question_type = request.GET.get('question_type', '')
 
-    # Filter available questions based on search term and exclude those already in the quiz
-    quiz_questions = request.user.owned_quizzes.first().questions.values_list('id', flat=True)
-    questions = Question.objects.exclude(id__in=quiz_questions).filter(question_text__icontains=search_term)
+    # Fetch questions that are not in the quiz
+    available_questions = Question.objects.exclude(quiz__id=request.GET.get('quiz_id'))
 
-    question_list = []
-    for question in questions:
-        answers = [{"id": answer.id, "text": answer.answer_text} for answer in question.answers.all()]
-        question_list.append({
-            "id": question.id,
-            "text": question.question_text,
-            "answers": answers,
-        })
+    if search_term:
+        available_questions = available_questions.filter(question_text__icontains=search_term)
 
-    return JsonResponse({"questions": question_list})
+    if question_type:
+        available_questions = available_questions.filter(question_type=question_type)
+
+    return render(request, 'quiz_app/available_questions.html', {'questions': available_questions})
+
 
 def candidates_page(request):
     return render(request, 'quiz_app/candidatespage.html')

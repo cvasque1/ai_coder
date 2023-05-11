@@ -19,7 +19,17 @@
           z-index: 1040;
           position: relative;
       }
+
+      .question-unit {
+        cursor: pointer;
+      }
+    
+      .question-unit.selected {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+      }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header class="header">
@@ -55,23 +65,45 @@
     </div>
 
     <div class="modal fade" id="createQuizModal" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="createQuizModalLabel">Create Quiz</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#createQuizModal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="create-quiz-form" method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </form>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createQuizModalLabel">Create Quiz</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#createQuizModal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="create-quiz-form" method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <div id="questions-list">
+                <!-- Added questions will go here -->
               </div>
+              <button type="button" id="add-question-btn">Add Question</button>
+              <button type="submit" class="btn btn-primary">Create</button>
+              <!-- Available Questions Modal -->
+              <div id="available-questions-modal" style="display: none;">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Available Questions</h5>
+                    <button type="button" id="close-available-questions-modal" class="btn-close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="available-questions-list">
+                      <!-- Available questions will go here -->
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="add-selected-question-btn" class="btn btn-primary">Add Selected Question</button>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
+      </div>
     </div>
-
+    
+    
 
     <div class="table-responsive mt-4 quiz-table">
       <table class="table table-striped">
@@ -109,23 +141,126 @@
   </footer>
 
   <script>
-    document.getElementById("create-quiz-form").addEventListener("submit", function(event) {
-        event.preventDefault();
+      document.getElementById("create-quiz-form").addEventListener("submit", function(event) {
+          event.preventDefault();
+      
+          let form = document.getElementById("create-quiz-form");
+          let formData = new FormData(form);
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "{% url 'quiz_app:create_quiz' %}", true);
+          xhr.setRequestHeader("X-CSRFToken", document.getElementsByName("csrfmiddlewaretoken")[0].value);
+          xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                  let response = JSON.parse(xhr.responseText);
+                  if (response.status === 'success') {
+                      // Close the modal
+                      let modalElement = document.getElementById('createQuizModal');
+                      let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                      modalInstance.hide();
+      
+                      // Clear the form
+                      form.reset();
+      
+                      // Remove all questions from the form
+                      document.querySelectorAll('#questions-list .question-unit').forEach(function(question) {
+                          question.remove();
+                      });
+                      document.querySelectorAll("input[name='questions']").forEach(function(input) {
+                          input.remove();
+                      });
+      
+                      // Fetch and update the quizzes list
+                      fetchQuizzes();
+                  } else {
+                      console.error('Failed to create quiz:', response.message);
+                  }
+              }
+          };
+          xhr.send(formData);
+      });
+      
+      function fetchQuizzes() {
+          let xhr = new XMLHttpRequest();
+          xhr.open("GET", "{% url 'quiz_app:fetchquizzes' %}", true);
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                  let response = JSON.parse(xhr.responseText);
+                  if (response.status === 'success') {
+                      // Update the quizzes list
+                      let quizzesList = document.querySelector('.quiz-table tbody');
+                      quizzesList.innerHTML = response.html; // assuming the response contains an 'html' field with the rendered quizzes list
+                  } else {
+                      console.error('Failed to fetch quizzes:', response.message);
+                  }
+              }
+          };
+          xhr.send();
+      }
     
-        let form = document.getElementById("create-quiz-form");
-        let formData = new FormData(form);
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "{% url 'quiz_app:create_quiz' %}", true);
-        xhr.setRequestHeader("X-CSRFToken", document.getElementsByName("csrfmiddlewaretoken")[0].value);
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // You can handle the response here, like closing the modal and updating the quiz list
-                console.log(xhr.responseText);
-            }
-        };
-        xhr.send(formData);
+    //
+    //Handle the 'Add Question' button click and the process of adding questions
+    //
+    $("#add-question-btn").on("click", function () {
+      // Load available questions via AJAX
+      loadAvailableQuestions();
+      // Show the modal
+      $("#available-questions-modal").show();
     });
+
+    function loadAvailableQuestions() {
+      $.ajax({
+        url: "/available_questions/", // Update with your URL to fetch available questions
+        success: function (data) {
+          // Render available questions in the modal
+          $("#available-questions-list").html(data);
+          // Add click event to select a question
+          $("#available-questions-list .question-unit").on("click", function () {
+            $(this).siblings().removeClass("selected");
+            $(this).addClass("selected");
+          });
+        },
+      });
+    }
+
+
+    //
+    // Include selected questions when submitting form
+    //
+    $("#add-selected-question-btn").on("click", function () {
+      // Get the selected question
+      var selectedQuestion = $("#available-questions-list .question-unit.selected");
+      
+      // Create a clone of the selected question and append a delete button
+      var questionClone = selectedQuestion.clone();
+      questionClone.append('<button class="delete-question-btn">Delete</button>');
+  
+      // Add the selected question to the quiz questions list
+      $("#questions-list").append(questionClone);
+    
+      // Add a hidden input for the selected question
+      var questionId = selectedQuestion.data("question-id");
+      $("#create-quiz-form").append('<input type="hidden" name="questions" value="' + questionId + '">');
+    
+      // Hide the modal
+      $("#available-questions-modal").hide();
+    });
+
+    $("#questions-list").on("click", ".delete-question-btn", function () {
+      // Get the question unit element
+      var questionUnit = $(this).parent();
+  
+      // Remove the question from the questions list
+      questionUnit.remove();
+  
+      // Remove the corresponding hidden input
+      $("input[name='questions'][value='" + questionUnit.data("question-id") + "']").remove();
+    });
+
+    $("#close-available-questions-modal").on("click", function () {
+      $("#available-questions-modal").hide();
+    });
+    
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
